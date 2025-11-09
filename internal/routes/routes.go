@@ -2,6 +2,7 @@ package routes
 
 import (
 	"fmt"
+	"go-crud/internal/handlers"
 	"net/http"
 
 	"github.com/gorilla/mux"
@@ -16,17 +17,17 @@ func logMiddleware(next http.Handler) http.Handler {
 }
 
 // Setup vai retornar todas as rotas feitas
-func Setup() *mux.Router {
+func Setup(usuarioHandler *handlers.UsuarioHandler, produtoHandler *handlers.ProdutoHandler) *mux.Router {
 	router := mux.NewRouter()
 	router.Use(logMiddleware)
 
-	produto := router.PathPrefix("/produto").Subrouter()
+	produtoRouter := router.PathPrefix("/produto").Subrouter()
 
-	/*produto.HandleFunc("", produto.CriarProduto).Methods(http.MethodPost)
-	produto.HandleFunc("", produto.GetProdutos).Methods(http.MethodGet)
-	produto.HandleFunc("/{idProduto}", produto.GetProduto).Methods(http.MethodGet)
-	produto.HandleFunc("/{idProduto}", produto.AtualizarProduto).Methods(http.MethodPut)
-	produto.HandleFunc("/{idProduto}", produto.DeletarProduto).Methods(http.MethodDelete)*/
+	produtoRouter.HandleFunc("", produtoHandler.CriarProduto).Methods(http.MethodPost)
+	//produtoRouter.HandleFunc("", produtoHandler.GetProdutos).Methods(http.MethodGet)
+	//produtoRouter.HandleFunc("/{idProduto}", produtoHandler.GetProduto).Methods(http.MethodGet)
+	//produtoRouter.HandleFunc("/{idProduto}", produtoHandler.AtualizarProduto).Methods(http.MethodPut)
+	//produtoRouter.HandleFunc("/{idProduto}", produtoHandler.DeletarProduto).Methods(http.MethodDelete)
 
 	return router
 }

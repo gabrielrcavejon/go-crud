@@ -5,7 +5,8 @@ USE gocrud;
 CREATE TABLE usuario (
   idusuario INT AUTO_INCREMENT PRIMARY KEY,
   nome VARCHAR(150) NOT NULL,
-  email VARCHAR(200) NOT NULL UNIQUE
+  email VARCHAR(200) NOT NULL UNIQUE,
+  senha VARCHAR(250) NOT NULL,
   criadoEm timestamp DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
