@@ -29,7 +29,7 @@ func (r *ProdutoRepository) Create(p model.Produto) error {
 
 // Update atualiza um produto no banco de dados
 func (r *ProdutoRepository) Update(idProduto uint32, p model.Produto) error {
-	stmt, erro := r.DB.Prepare("UPDATE product(nome, descricao, idusuario) VALUES(?, ?, ?) WHERE idproduto = ?")
+	stmt, erro := r.DB.Prepare("UPDATE product SET nome = ?, descricao = ?, idusuario = ? WHERE idproduto = ?")
 	if erro != nil {
 		return erro
 	}
