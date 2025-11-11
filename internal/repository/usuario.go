@@ -28,7 +28,7 @@ func (r *UsuarioRepository) Create(u model.Usuario) error {
 }
 
 // Update vai atualizar um usuario
-func (r *UsuarioRepository) Update(idUsuario uint32, u model.Usuario) error {
+func (r *UsuarioRepository) Update(idUsuario uint, u model.Usuario) error {
 	stmt, erro := r.DB.Prepare("UPDATE usuario SET nome = ?, email = ?, senha = ? WHERE idusuario = ?")
 	if erro != nil {
 		return erro
@@ -40,7 +40,7 @@ func (r *UsuarioRepository) Update(idUsuario uint32, u model.Usuario) error {
 }
 
 // Delete vai deletar um usuario
-func (r *UsuarioRepository) Delete(idUsuario uint32) error {
+func (r *UsuarioRepository) Delete(idUsuario uint) error {
 	stmt, erro := r.DB.Prepare("DELETE FROM usuario WHERE idusuario = ?")
 	if erro != nil {
 		return erro
@@ -75,7 +75,7 @@ func (r *UsuarioRepository) GetUsuarios() ([]model.Usuario, error) {
 }
 
 // GetUsuario vai trazer apenas o usuario com o id que foi passado como parametro
-func (r *UsuarioRepository) GetUsuario(idUsuario uint32) (model.Usuario, error) {
+func (r *UsuarioRepository) GetUsuario(idUsuario uint) (model.Usuario, error) {
 	row := r.DB.QueryRow("SELECT idusuario, nome, email, senha FROM usuario WHERE idusuario = ?", idUsuario)
 
 	var u model.Usuario
