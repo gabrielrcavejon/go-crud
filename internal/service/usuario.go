@@ -16,7 +16,7 @@ func NewUsuarioService(r *repository.UsuarioRepository) *UsuarioService {
 }
 
 // CriarUsuario cria um usuario no banco de dados
-func (s *UsuarioService) CriarUsuario(u model.Usuario) error {
+func (s *UsuarioService) CriarUsuario(u model.Usuario) (uint, error) {
 	// fazer senha com hasha qui
 	return s.Repo.Create(u)
 }

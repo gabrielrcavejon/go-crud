@@ -3,6 +3,7 @@ package handlers
 import (
 	"encoding/json"
 	"go-crud/internal/model"
+	"go-crud/internal/response"
 	"go-crud/internal/service"
 	"net/http"
 	"strconv"
@@ -24,17 +25,19 @@ func NewProdutoHandler(s *service.ProdutoService) *ProdutoHandler {
 func (h *ProdutoHandler) CriarProduto(w http.ResponseWriter, r *http.Request) {
 	var p model.Produto
 	if erro := json.NewDecoder(r.Body).Decode(&p); erro != nil {
-		http.Error(w, "JSON inválido: "+erro.Error(), http.StatusBadRequest)
+		response.RetonarErro(w, http.StatusBadRequest, "JSON inválido: "+erro.Error())
 		return
 	}
 
-	if erro := h.Service.CriarProduto(p); erro != nil {
-		http.Error(w, "Erro ao criar produto: "+erro.Error(), http.StatusInternalServerError)
+	ID, erro := h.Service.CriarProduto(p)
+	if erro != nil {
+		response.RetonarErro(w, http.StatusInternalServerError, "Erro ao criar produto: "+erro.Error())
 		return
 	}
 
-	w.WriteHeader(http.StatusCreated)
-	json.NewEncoder(w).Encode(map[string]string{"mensagem": "Produto criado"})
+	p.ID = uint32(ID)
+
+	response.RetonarSucesso(w, http.StatusCreated, p, "Produto criado")
 }
 
 // AtualizarProduto atualiza um produto
@@ -44,22 +47,22 @@ func (h *ProdutoHandler) AtualizarProduto(w http.ResponseWriter, r *http.Request
 
 	ID, erro := strconv.ParseUint(idStr, 10, 64)
 	if erro != nil {
-		http.Error(w, "ID do produto inválido"+erro.Error(), http.StatusBadRequest)
+		response.RetonarErro(w, http.StatusBadRequest, "ID do produto inválido"+erro.Error())
 		return
 	}
 
 	var p model.Produto
 	if erro := json.NewDecoder(r.Body).Decode(&p); erro != nil {
-		http.Error(w, "JSON inválido: "+erro.Error(), http.StatusBadRequest)
+		response.RetonarErro(w, http.StatusBadRequest, "JSON inválido: "+erro.Error())
 		return
 	}
 
 	if erro := h.Service.AtualizarProduto(uint(ID), p); erro != nil {
-		http.Error(w, "Erro ao atualizar produto: "+erro.Error(), http.StatusInternalServerError)
+		response.RetonarErro(w, http.StatusInternalServerError, "Erro ao atualizar produto: "+erro.Error())
 		return
 	}
 
-	w.WriteHeader(http.StatusNoContent)
+	response.RetonarSucesso(w, http.StatusNoContent, nil, "Produto Atualizado")
 }
 
 // DeletarProduto deleta um produto
@@ -69,16 +72,16 @@ func (h *ProdutoHandler) DeletarProduto(w http.ResponseWriter, r *http.Request) 
 
 	ID, erro := strconv.ParseUint(idStr, 10, 64)
 	if erro != nil {
-		http.Error(w, "ID do produto inválido"+erro.Error(), http.StatusBadRequest)
+		response.RetonarErro(w, http.StatusBadRequest, "ID do produto inválido"+erro.Error())
 		return
 	}
 
 	if erro := h.Service.DeleteProduto(uint(ID)); erro != nil {
-		http.Error(w, "Erro ao deletar produto: "+erro.Error(), http.StatusInternalServerError)
+		response.RetonarErro(w, http.StatusInternalServerError, "Erro ao deletar produto: "+erro.Error())
 		return
 	}
 
-	w.WriteHeader(http.StatusNoContent)
+	response.RetonarSucesso(w, http.StatusNoContent, nil, "Produto Excluido")
 }
 
 // GetProduto pega o produto a partir do id dele
@@ -88,28 +91,26 @@ func (h *ProdutoHandler) GetProduto(w http.ResponseWriter, r *http.Request) {
 
 	ID, erro := strconv.ParseUint(idStr, 10, 64)
 	if erro != nil {
-		http.Error(w, "ID do produto inválido"+erro.Error(), http.StatusBadRequest)
+		response.RetonarErro(w, http.StatusBadRequest, "ID do produto inválido"+erro.Error())
 		return
 	}
 
 	produto, erro := h.Service.GetProduto(uint(ID))
 	if erro != nil {
-		http.Error(w, "Erro ao pedar um produto: "+erro.Error(), http.StatusInternalServerError)
+		response.RetonarErro(w, http.StatusInternalServerError, "Erro ao pedar um produto: "+erro.Error())
 		return
 	}
 
-	w.WriteHeader(http.StatusOK)
-	json.NewEncoder(w).Encode(map[string]model.Produto{"mensagem": produto})
+	response.RetonarSucesso(w, http.StatusOK, produto, "Produto encontrado")
 }
 
 // GetProdutos pega todos os produtos do banco de dados
 func (h *ProdutoHandler) GetProdutos(w http.ResponseWriter, r *http.Request) {
 	produtos, erro := h.Service.GetProdutos()
 	if erro != nil {
-		http.Error(w, "Erro ao pegar todos os produtos: "+erro.Error(), http.StatusInternalServerError)
+		response.RetonarErro(w, http.StatusInternalServerError, "Erro ao pegar todos os produtos: "+erro.Error())
 		return
 	}
 
-	w.WriteHeader(http.StatusOK)
-	json.NewEncoder(w).Encode(map[string][]model.Produto{"mensagem": produtos})
+	response.RetonarSucesso(w, http.StatusOK, produtos, "Produtos listados")
 }

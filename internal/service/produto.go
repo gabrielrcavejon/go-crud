@@ -16,7 +16,7 @@ func NewProdutoService(r *repository.ProdutoRepository) *ProdutoService {
 }
 
 // CriarProduto cria um produto no banco de dados
-func (s *ProdutoService) CriarProduto(p model.Produto) error {
+func (s *ProdutoService) CriarProduto(p model.Produto) (uint, error) {
 	return s.Repo.Create(p)
 }
 

@@ -16,15 +16,24 @@ func NewProdutoRepository(db *sql.DB) *ProdutoRepository {
 }
 
 // Create vai criar um novo produto no banco de dados
-func (r *ProdutoRepository) Create(p model.Produto) error {
+func (r *ProdutoRepository) Create(p model.Produto) (uint, error) {
 	stmt, erro := r.DB.Prepare("INSERT INTO produto(nome, descricao, idusuario) VALUES(?, ?, ?)")
 	if erro != nil {
-		return erro
+		return 0, erro
 	}
 	defer stmt.Close()
 
-	_, erro = stmt.Exec(p.Nome, p.Descricao, p.IDUsuario)
-	return erro
+	res, erro := stmt.Exec(p.Nome, p.Descricao, p.IDUsuario)
+	if erro != nil {
+		return 0, erro
+	}
+
+	ID, erro := res.LastInsertId()
+	if erro != nil {
+		return 0, erro
+	}
+
+	return uint(ID), nil
 }
 
 // Update atualiza um produto no banco de dados

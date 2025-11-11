@@ -16,15 +16,24 @@ func NewUsuarioRepository(db *sql.DB) *UsuarioRepository {
 }
 
 // Create vai criar um novo usuario no banco de dados
-func (r *UsuarioRepository) Create(u model.Usuario) error {
+func (r *UsuarioRepository) Create(u model.Usuario) (uint, error) {
 	stmt, erro := r.DB.Prepare("INSERT INTO usuario(nome, email, senha) VALUES(?, ?, ?)")
 	if erro != nil {
-		return erro
+		return 0, erro
 	}
 	defer stmt.Close()
 
-	_, erro = stmt.Exec(u.Nome, u.Email, u.Senha)
-	return erro
+	res, erro := stmt.Exec(u.Nome, u.Email, u.Senha)
+	if erro != nil {
+		return 0, erro
+	}
+
+	ID, erro := res.LastInsertId()
+	if erro != nil {
+		return 0, erro
+	}
+
+	return uint(ID), nil
 }
 
 // Update vai atualizar um usuario
