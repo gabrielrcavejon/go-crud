@@ -14,6 +14,7 @@ import (
 func main() {
 	database.Conectar()
 
+	// Faz a injeção de dependencia automatica
 	usuarioRepo := repository.NewUsuarioRepository(database.DB)
 	usuarioService := service.NewUsuarioService(usuarioRepo)
 	usuarioHandler := handlers.NewUsuarioHandler(usuarioService)
