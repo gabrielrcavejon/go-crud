@@ -15,7 +15,7 @@ var DB *sql.DB
 
 // Conectar e a funcao que vai fazer a conexao com o banco de dados
 func Conectar() {
-	erro := godotenv.Load()
+	erro := godotenv.Load("../../.env")
 	if erro != nil {
 		log.Fatal(".env não encontrado")
 	}

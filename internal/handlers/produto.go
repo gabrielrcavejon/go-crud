@@ -94,11 +94,11 @@ func (h *ProdutoHandler) GetProduto(w http.ResponseWriter, r *http.Request) {
 
 	produto, erro := h.Service.GetProduto(uint(ID))
 	if erro != nil {
-		http.Error(w, "Erro ao deletar produto: "+erro.Error(), http.StatusInternalServerError)
+		http.Error(w, "Erro ao pedar um produto: "+erro.Error(), http.StatusInternalServerError)
 		return
 	}
 
-	w.WriteHeader(http.StatusNoContent)
+	w.WriteHeader(http.StatusOK)
 	json.NewEncoder(w).Encode(map[string]model.Produto{"mensagem": produto})
 }
 
@@ -106,10 +106,10 @@ func (h *ProdutoHandler) GetProduto(w http.ResponseWriter, r *http.Request) {
 func (h *ProdutoHandler) GetProdutos(w http.ResponseWriter, r *http.Request) {
 	produtos, erro := h.Service.GetProdutos()
 	if erro != nil {
-		http.Error(w, "Erro ao deletar produtos: "+erro.Error(), http.StatusInternalServerError)
+		http.Error(w, "Erro ao pegar todos os produtos: "+erro.Error(), http.StatusInternalServerError)
 		return
 	}
 
-	w.WriteHeader(http.StatusNoContent)
+	w.WriteHeader(http.StatusOK)
 	json.NewEncoder(w).Encode(map[string][]model.Produto{"mensagem": produtos})
 }

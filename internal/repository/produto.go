@@ -23,19 +23,19 @@ func (r *ProdutoRepository) Create(p model.Produto) error {
 	}
 	defer stmt.Close()
 
-	_, erro = stmt.Exec(p.Nome, p.Descricao, 1) // Por enquanto fixo
+	_, erro = stmt.Exec(p.Nome, p.Descricao, p.IDUsuario)
 	return erro
 }
 
 // Update atualiza um produto no banco de dados
 func (r *ProdutoRepository) Update(idProduto uint, p model.Produto) error {
-	stmt, erro := r.DB.Prepare("UPDATE product SET nome = ?, descricao = ?, idusuario = ? WHERE idproduto = ?")
+	stmt, erro := r.DB.Prepare("UPDATE produto SET nome = ?, descricao = ?, idusuario = ? WHERE idproduto = ?")
 	if erro != nil {
 		return erro
 	}
 	defer stmt.Close()
 
-	_, erro = stmt.Exec(p.Nome, p.Descricao, 1, idProduto) // Por enquanto fixo o idUsuario
+	_, erro = stmt.Exec(p.Nome, p.Descricao, p.IDUsuario, idProduto)
 	return erro
 }
 
@@ -53,7 +53,7 @@ func (r *ProdutoRepository) Delete(idProduto uint) error {
 
 // GetProdutos vai retornar uma lista de produtos
 func (r *ProdutoRepository) GetProdutos() ([]model.Produto, error) {
-	rows, erro := r.DB.Query("SELECT idproduto, nome, descricao, idusuario")
+	rows, erro := r.DB.Query("SELECT idproduto, nome, descricao, idusuario FROM produto")
 	if erro != nil {
 		return nil, erro
 	}
@@ -76,7 +76,7 @@ func (r *ProdutoRepository) GetProdutos() ([]model.Produto, error) {
 
 // GetProduto vai retornar uma produto em especifico, dependendo do id que for passado por parametro
 func (r *ProdutoRepository) GetProduto(idProduto uint) (model.Produto, error) {
-	row := r.DB.QueryRow("SELECT idproduto, nome, descricao, idusuario WHERE idusuario = ?", idProduto)
+	row := r.DB.QueryRow("SELECT idproduto, nome, descricao, idusuario FROM produto WHERE idproduto = ?", idProduto)
 
 	var p model.Produto
 

@@ -94,11 +94,11 @@ func (h *UsuarioHandler) GetUsuario(w http.ResponseWriter, r *http.Request) {
 
 	usuario, erro := h.Service.GetUsuario(uint(ID))
 	if erro != nil {
-		http.Error(w, "Erro ao deletar usuário: "+erro.Error(), http.StatusInternalServerError)
+		http.Error(w, "Erro ao pegar um usuário: "+erro.Error(), http.StatusInternalServerError)
 		return
 	}
 
-	w.WriteHeader(http.StatusNoContent)
+	w.WriteHeader(http.StatusOK)
 	json.NewEncoder(w).Encode(map[string]model.Usuario{"mensagem": usuario})
 }
 
@@ -106,10 +106,10 @@ func (h *UsuarioHandler) GetUsuario(w http.ResponseWriter, r *http.Request) {
 func (h *UsuarioHandler) GetUsuarios(w http.ResponseWriter, r *http.Request) {
 	usuarios, erro := h.Service.GetUsuarios()
 	if erro != nil {
-		http.Error(w, "Erro ao deletar usuário: "+erro.Error(), http.StatusInternalServerError)
+		http.Error(w, "Erro ao pegar todos os usuário: "+erro.Error(), http.StatusInternalServerError)
 		return
 	}
 
-	w.WriteHeader(http.StatusNoContent)
+	w.WriteHeader(http.StatusOK)
 	json.NewEncoder(w).Encode(map[string][]model.Usuario{"mensagem": usuarios})
 }
