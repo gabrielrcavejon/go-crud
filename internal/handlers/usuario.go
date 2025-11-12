@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"encoding/json"
+	"go-crud/internal/dto"
 	"go-crud/internal/model"
 	"go-crud/internal/response"
 	"go-crud/internal/service"
@@ -36,9 +37,13 @@ func (h *UsuarioHandler) CriarUsuario(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	u.ID = uint32(ID)
+	resp := dto.UsuarioResponse{
+		ID:    uint32(ID),
+		Nome:  u.Nome,
+		Email: u.Email,
+	}
 
-	response.RetonarSucesso(w, http.StatusCreated, u, "Usuário criado")
+	response.RetonarSucesso(w, http.StatusCreated, resp, "Usuário criado")
 }
 
 // AtualizarUsario atualiza um usuario
@@ -102,7 +107,13 @@ func (h *UsuarioHandler) GetUsuario(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	response.RetonarSucesso(w, http.StatusOK, usuario, "Usuario Encontrado")
+	resp := dto.UsuarioResponse{
+		ID:    uint32(usuario.ID),
+		Nome:  usuario.Nome,
+		Email: usuario.Email,
+	}
+
+	response.RetonarSucesso(w, http.StatusOK, resp, "Usuario Encontrado")
 }
 
 // GetUsuarios pega todos os usuarios do banco de dados
@@ -113,5 +124,15 @@ func (h *UsuarioHandler) GetUsuarios(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	response.RetonarSucesso(w, http.StatusOK, usuarios, "Usuarios listado")
+	resps := make([]dto.UsuarioResponse, 0, len(usuarios))
+
+	for _, u := range usuarios {
+		resps = append(resps, dto.UsuarioResponse{
+			ID:    u.ID,
+			Nome:  u.Nome,
+			Email: u.Email,
+		})
+	}
+
+	response.RetonarSucesso(w, http.StatusOK, resps, "Usuarios listado")
 }

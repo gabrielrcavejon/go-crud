@@ -1,8 +1,13 @@
 package service
 
 import (
+	"errors"
 	"go-crud/internal/model"
 	"go-crud/internal/repository"
+	"net/mail"
+	"strings"
+
+	"golang.org/x/crypto/bcrypt"
 )
 
 // UsuarioService é o servico de usuario
@@ -17,7 +22,27 @@ func NewUsuarioService(r *repository.UsuarioRepository) *UsuarioService {
 
 // CriarUsuario cria um usuario no banco de dados
 func (s *UsuarioService) CriarUsuario(u model.Usuario) (uint, error) {
-	// fazer senha com hasha qui
+	u.Email = strings.TrimSpace(u.Email)
+	u.Nome = strings.TrimSpace(u.Nome)
+
+	if _, err := mail.ParseAddress(u.Email); err != nil {
+		return 0, errors.New("e-mail inválido")
+	}
+
+	if u.Nome == "" {
+		return 0, errors.New("nome obrigatório")
+	}
+
+	if u.Senha == "" {
+		return 0, errors.New("senha obrigatória")
+	}
+
+	hash, erro := bcrypt.GenerateFromPassword([]byte(u.Senha), bcrypt.DefaultCost)
+	if erro != nil {
+		return 0, errors.New("erro ao gerar hash da senha")
+	}
+	u.Senha = string(hash)
+
 	return s.Repo.Create(u)
 }
 

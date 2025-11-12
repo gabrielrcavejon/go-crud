@@ -85,11 +85,11 @@ func (r *UsuarioRepository) GetUsuarios() ([]model.Usuario, error) {
 
 // GetUsuario vai trazer apenas o usuario com o id que foi passado como parametro
 func (r *UsuarioRepository) GetUsuario(idUsuario uint) (model.Usuario, error) {
-	row := r.DB.QueryRow("SELECT idusuario, nome, email, senha FROM usuario WHERE idusuario = ?", idUsuario)
+	row := r.DB.QueryRow("SELECT idusuario, nome, email FROM usuario WHERE idusuario = ?", idUsuario)
 
 	var u model.Usuario
 
-	if erro := row.Scan(&u.ID, &u.Nome, &u.Email, &u.Senha); erro != nil {
+	if erro := row.Scan(&u.ID, &u.Nome, &u.Email); erro != nil {
 		return model.Usuario{}, erro
 	}
 
