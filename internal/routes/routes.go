@@ -21,21 +21,9 @@ func Setup(usuarioHandler *handlers.UsuarioHandler, produtoHandler *handlers.Pro
 	router := mux.NewRouter()
 	router.Use(logMiddleware)
 
-	produtoRouter := router.PathPrefix("/produto").Subrouter()
+	RegisterProdutoRoutes(router, produtoHandler)
 
-	produtoRouter.HandleFunc("", produtoHandler.CriarProduto).Methods(http.MethodPost)
-	produtoRouter.HandleFunc("", produtoHandler.GetProdutos).Methods(http.MethodGet)
-	produtoRouter.HandleFunc("/{idProduto}", produtoHandler.GetProduto).Methods(http.MethodGet)
-	produtoRouter.HandleFunc("/{idProduto}", produtoHandler.AtualizarProduto).Methods(http.MethodPut)
-	produtoRouter.HandleFunc("/{idProduto}", produtoHandler.DeletarProduto).Methods(http.MethodDelete)
-
-	usuarioRouter := router.PathPrefix("/usuario").Subrouter()
-
-	usuarioRouter.HandleFunc("", usuarioHandler.CriarUsuario).Methods(http.MethodPost)
-	usuarioRouter.HandleFunc("", usuarioHandler.GetUsuarios).Methods(http.MethodGet)
-	usuarioRouter.HandleFunc("/{idUsuario}", usuarioHandler.GetUsuario).Methods(http.MethodGet)
-	usuarioRouter.HandleFunc("/{idUsuario}", usuarioHandler.AtualizarUsario).Methods(http.MethodPut)
-	usuarioRouter.HandleFunc("/{idUsuario}", usuarioHandler.DeletarUsuario).Methods(http.MethodDelete)
+	RegisterUsuarioRoutes(router, usuarioHandler)
 
 	return router
 }
