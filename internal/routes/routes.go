@@ -17,13 +17,15 @@ func logMiddleware(next http.Handler) http.Handler {
 }
 
 // Setup vai retornar todas as rotas feitas
-func Setup(usuarioHandler *handlers.UsuarioHandler, produtoHandler *handlers.ProdutoHandler) *mux.Router {
+func Setup(usuarioHandler *handlers.UsuarioHandler, produtoHandler *handlers.ProdutoHandler, loginHandler *handlers.LoginHandler) *mux.Router {
 	router := mux.NewRouter()
 	router.Use(logMiddleware)
 
 	RegisterProdutoRoutes(router, produtoHandler)
 
 	RegisterUsuarioRoutes(router, usuarioHandler)
+
+	RegisterLoginRoutes(router, loginHandler)
 
 	return router
 }
