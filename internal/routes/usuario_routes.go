@@ -2,6 +2,7 @@ package routes
 
 import (
 	"go-crud/internal/handlers"
+	"go-crud/internal/middleware"
 	"net/http"
 
 	"github.com/gorilla/mux"
@@ -10,6 +11,7 @@ import (
 // RegisterUsuarioRoutes retorna as rotas de usuario configuradas
 func RegisterUsuarioRoutes(router *mux.Router, handler *handlers.UsuarioHandler) {
 	r := router.PathPrefix("/usuario").Subrouter()
+	r.Use(middleware.AuthMiddleware)
 
 	r.HandleFunc("", handler.CriarUsuario).Methods(http.MethodPost)
 	r.HandleFunc("", handler.GetUsuarios).Methods(http.MethodGet)

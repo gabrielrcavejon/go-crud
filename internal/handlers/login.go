@@ -27,10 +27,11 @@ func (h *LoginHandler) Login(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if erro := h.Service.Login(request.Email, request.Senha); erro != nil {
+	token, erro := h.Service.Login(request.Email, request.Senha)
+	if erro != nil {
 		response.RetonarErro(w, http.StatusUnauthorized, erro.Error())
 		return
 	}
 
-	response.RetonarSucesso(w, http.StatusOK, nil, "")
+	response.RetonarSucesso(w, http.StatusOK, token, "Login realizado com sucesso")
 }

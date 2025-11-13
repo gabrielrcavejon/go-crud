@@ -9,6 +9,8 @@ require (
 
 require golang.org/x/crypto v0.44.0
 
+require github.com/golang-jwt/jwt/v5 v5.3.0
+
 require (
 	filippo.io/edwards25519 v1.1.0 // indirect
 	github.com/joho/godotenv v1.5.1
