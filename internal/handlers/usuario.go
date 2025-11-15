@@ -6,6 +6,7 @@ import (
 	"go-crud/internal/model"
 	"go-crud/internal/response"
 	"go-crud/internal/service"
+	"go-crud/internal/utils"
 	"net/http"
 	"strconv"
 
@@ -38,9 +39,9 @@ func (h *UsuarioHandler) CriarUsuario(w http.ResponseWriter, r *http.Request) {
 	}
 
 	resp := dto.UsuarioResponse{
-		ID:    uint32(ID),
-		Nome:  u.Nome,
-		Email: u.Email,
+		IDUsuario: uint32(ID),
+		Nome:      u.Nome,
+		Email:     u.Email,
 	}
 
 	response.RetonarSucesso(w, http.StatusCreated, resp, "Usuário criado")
@@ -108,9 +109,9 @@ func (h *UsuarioHandler) GetUsuario(w http.ResponseWriter, r *http.Request) {
 	}
 
 	resp := dto.UsuarioResponse{
-		ID:    uint32(usuario.ID),
-		Nome:  usuario.Nome,
-		Email: usuario.Email,
+		IDUsuario: uint32(usuario.ID),
+		Nome:      usuario.Nome,
+		Email:     usuario.Email,
 	}
 
 	response.RetonarSucesso(w, http.StatusOK, resp, "Usuario Encontrado")
@@ -124,15 +125,40 @@ func (h *UsuarioHandler) GetUsuarios(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	resps := make([]dto.UsuarioResponse, 0, len(usuarios))
+	resp := make([]dto.UsuarioResponse, 0, len(usuarios))
 
 	for _, u := range usuarios {
-		resps = append(resps, dto.UsuarioResponse{
-			ID:    u.ID,
-			Nome:  u.Nome,
-			Email: u.Email,
+		resp = append(resp, dto.UsuarioResponse{
+			IDUsuario: u.ID,
+			Nome:      u.Nome,
+			Email:     u.Email,
 		})
 	}
 
-	response.RetonarSucesso(w, http.StatusOK, resps, "Usuarios listado")
+	response.RetonarSucesso(w, http.StatusOK, resp, "Usuarios listado")
+}
+
+// GetMe pega o usuario no qual o id esta no JWT enviado
+func (h *UsuarioHandler) GetMe(w http.ResponseWriter, r *http.Request) {
+	IDUsuarioString := utils.PegaUserID(r)
+
+	IDUsuario, erro := strconv.ParseUint(IDUsuarioString, 10, 64)
+	if erro != nil {
+		response.RetonarErro(w, http.StatusInternalServerError, "Erro ao pegar idusuario no Token: "+erro.Error())
+		return
+	}
+
+	usuario, erro := h.Service.GetUsuario(uint(IDUsuario))
+	if erro != nil {
+		response.RetonarErro(w, http.StatusInternalServerError, "Erro ao pegar seu usuario: "+erro.Error())
+		return
+	}
+
+	resp := dto.UsuarioResponse{
+		IDUsuario: usuario.ID,
+		Nome:      usuario.Nome,
+		Email:     usuario.Email,
+	}
+
+	response.RetonarSucesso(w, http.StatusOK, resp, "Usuario Encontrado")
 }

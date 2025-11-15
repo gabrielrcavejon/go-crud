@@ -15,6 +15,7 @@ func RegisterUsuarioRoutes(router *mux.Router, handler *handlers.UsuarioHandler)
 
 	r.HandleFunc("", handler.CriarUsuario).Methods(http.MethodPost)
 	r.HandleFunc("", handler.GetUsuarios).Methods(http.MethodGet)
+	r.HandleFunc("/me", handler.GetMe).Methods(http.MethodGet)
 	r.HandleFunc("/{idUsuario}", handler.GetUsuario).Methods(http.MethodGet)
 	r.HandleFunc("/{idUsuario}", handler.AtualizarUsario).Methods(http.MethodPut)
 	r.HandleFunc("/{idUsuario}", handler.DeletarUsuario).Methods(http.MethodDelete)
