@@ -11,7 +11,6 @@ import (
 	"net/http"
 
 	"github.com/joho/godotenv"
-	"github.com/rs/cors"
 )
 
 func main() {
@@ -43,7 +42,11 @@ func main() {
 	// Configura as rotas da api
 	router := routes.Setup(usuarioHandler, produtoHandler, loginHandler)
 
-	c := cors.New(cors.Options{
+	// EM AMBIENTE DE DESENVOLVIMENTO CASO FOR TESTAR COM DISPOSITIVOS DIFERENTES
+	// DESCOMENTE ESSA PARTE DO CORS, MAS LEMBRE QUE ELE PERMITE QUALQUER
+	// DISPOSITIVO ACESSAR SE HABILITAR ISSO
+
+	/*c := cors.New(cors.Options{
 		AllowedOrigins:   []string{"*"},
 		AllowedMethods:   []string{"GET", "POST", "PUT", "DELETE", "OPTIONS"},
 		AllowedHeaders:   []string{"Authorization", "Content-Type"},
@@ -51,9 +54,9 @@ func main() {
 		Debug:            true, // Descomente para log de debug
 	})
 
-	handler := c.Handler(router)
+	handler := c.Handler(router)*/
 
 	// Start na api
 	fmt.Println("API em http://localhost:3000")
-	log.Fatal(http.ListenAndServe(":3000", handler))
+	log.Fatal(http.ListenAndServe(":3000", router))
 }
